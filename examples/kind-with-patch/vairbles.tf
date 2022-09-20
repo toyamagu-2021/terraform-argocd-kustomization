@@ -7,7 +7,7 @@ variable "kind_cluster_name" {
 variable "argocd_apps_repo" {
   description = "Argocd apps repository."
   type        = string
-  default     = "https://github.com/toyamagu-2021/terraform-kubernetes-bootstrap-argocd.git"
+  default     = "https://github.com/toyamagu-2021/terraform-argocd-kustomize.git"
 }
 
 variable "argocd_apps_target_revision" {

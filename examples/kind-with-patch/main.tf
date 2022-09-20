@@ -28,6 +28,14 @@ resource "kind_cluster" "this" {
 }
 
 module "argocd" {
-  source  = "../../"
-  patches = local.patches
+  source              = "../../"
+  patches             = local.patches
+  argocd_applications = local.argocd_applications
+  argocd_projects     = local.argocd_projects
+}
+
+resource "kubernetes_namespace" "apps" {
+  metadata {
+    name = "apps"
+  }
 }

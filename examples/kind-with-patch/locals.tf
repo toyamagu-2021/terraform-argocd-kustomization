@@ -26,13 +26,18 @@ locals {
 }
 
 # argocd-apps
-local {
+locals {
   argocd_applications_vars = {
     repo_url        = var.argocd_apps_repo
     target_revision = var.argocd_apps_target_revision
     path            = "examples/kind-with-patch/argocd/guestbook"
   }
   argocd_applications = [
-    templatefile("${path.module}/argocd/apps/applications.yaml.tftpl", local.argocd_applications_vars)
+    templatefile("${path.module}/argocd/applications/applications.yaml.tftpl", local.argocd_applications_vars)
+  ]
+  argocd_projects_vars = {
+  }
+  argocd_projects = [
+    templatefile("${path.module}/argocd/projects/projects.yaml.tftpl", local.argocd_projects_vars)
   ]
 }
