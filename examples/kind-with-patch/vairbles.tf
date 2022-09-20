@@ -13,5 +13,12 @@ variable "argocd_apps_repo" {
 variable "argocd_apps_target_revision" {
   description = "Argocd apps target revision."
   type        = string
-  default     = "argocd-apps-helm"
+  default     = "main"
+}
+
+variable "argocd_version" {
+  description = "ArgoCD version"
+  type        = string
+  default     = "master"
+
 }

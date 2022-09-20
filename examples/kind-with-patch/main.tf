@@ -32,10 +32,11 @@ module "argocd" {
   patches             = local.patches
   argocd_applications = local.argocd_applications
   argocd_projects     = local.argocd_projects
+  argocd_version      = var.argocd_version
 }
 
-resource "kubernetes_namespace" "apps" {
+resource "kubernetes_namespace" "child-apps" {
   metadata {
-    name = "apps"
+    name = "child-apps"
   }
 }
