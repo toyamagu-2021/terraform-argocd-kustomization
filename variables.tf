@@ -83,6 +83,38 @@ variable "patches" {
   default = []
 }
 
-terraform {
-  experiments = [module_variable_optional_attrs]
+variable "argocd_apps_name" {
+  description = "ArgoCD apps name"
+  type        = string
+  default     = "argocd-apps"
+}
+
+variable "argocd_helm_repo" {
+  description = "ArgoCD helm repository URL"
+  type        = string
+  default     = "https://argoproj.github.io/argo-helm"
+}
+
+variable "argocd_apps_helm_chart" {
+  description = "ArgoCD helm chart name"
+  type        = string
+  default     = "argocd-apps"
+}
+
+variable "argocd_applications" {
+  description = "ArgoCD applications"
+  type        = list(string)
+  default     = []
+}
+
+variable "argocd_projects" {
+  description = "ArgoCD projects"
+  type        = list(string)
+  default     = []
+}
+
+variable "argocd_apps_helm_version" {
+  description = "ArgoCD apps helm version"
+  type        = string
+  default     = "0.0.1"
 }

@@ -83,3 +83,20 @@ resource "kubernetes_namespace" "argocd" {
     name = var.argocd_namespace
   }
 }
+
+resource "helm_release" "argocd_apps" {
+  name = local.argocd_apps.name
+
+  repository = local.argocd_apps.helm_repo
+  chart      = local.argocd_apps.helm_chart
+  namespace  = local.argocd_apps.namespace
+  values     = local.argocd_apps.helm_values
+  version    = local.argocd_apps.helm_version
+
+  timeout = local.helm_config.timeout
+
+  depends_on = [
+    kubernetes_namespace.argocd,
+    kustomization_resource.argocd_p2
+  ]
+}

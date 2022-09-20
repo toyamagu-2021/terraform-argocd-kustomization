@@ -2,7 +2,11 @@ terraform {
   required_providers {
     kustomization = {
       source  = "kbst/kustomization"
-      version = "0.9.0"
+      version = "~> 0.9.0"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.6.0"
     }
   }
 }
