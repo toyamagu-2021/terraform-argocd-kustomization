@@ -57,3 +57,32 @@ variable "create_namespace" {
   type        = bool
   default     = true
 }
+
+
+variable "patches" {
+  description = "kustomize patches"
+  type = list(object({
+    patch = optional(string)
+    path  = optional(string)
+    target = optional(list(object({
+      group               = optional(string)
+      version             = optional(string)
+      kind                = optional(string)
+      name                = optional(string)
+      namespace           = optional(string)
+      label_selector      = optional(string)
+      annotation_selector = optional(string)
+      }))
+    )
+    options = optional(list(object({
+      allow_kind_change = optional(bool)
+      allow_name_change = optional(bool)
+      }))
+    )
+  }))
+  default = []
+}
+
+terraform {
+  experiments = [module_variable_optional_attrs]
+}

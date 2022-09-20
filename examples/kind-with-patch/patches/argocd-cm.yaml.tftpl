@@ -1,0 +1,8 @@
+# see https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/argocd-cm.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+data:
+  # Argo CD's externally facing base URL (optional). Required when configuring SSO
+  url: ${url}

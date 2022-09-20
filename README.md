@@ -42,9 +42,9 @@ No modules.
 | Name | Type |
 |------|------|
 | [kubernetes_namespace.argocd](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
-| [kustomization_resource.p0](https://registry.terraform.io/providers/kbst/kustomization/0.9.0/docs/resources/resource) | resource |
-| [kustomization_resource.p1](https://registry.terraform.io/providers/kbst/kustomization/0.9.0/docs/resources/resource) | resource |
-| [kustomization_resource.p2](https://registry.terraform.io/providers/kbst/kustomization/0.9.0/docs/resources/resource) | resource |
+| [kustomization_resource.argocd_p0](https://registry.terraform.io/providers/kbst/kustomization/0.9.0/docs/resources/resource) | resource |
+| [kustomization_resource.argocd_p1](https://registry.terraform.io/providers/kbst/kustomization/0.9.0/docs/resources/resource) | resource |
+| [kustomization_resource.argocd_p2](https://registry.terraform.io/providers/kbst/kustomization/0.9.0/docs/resources/resource) | resource |
 | [kustomization_overlay.argocd](https://registry.terraform.io/providers/kbst/kustomization/0.9.0/docs/data-sources/overlay) | data source |
 
 ## Inputs
@@ -61,6 +61,7 @@ No modules.
 | <a name="input_create_namespace"></a> [create\_namespace](#input\_create\_namespace) | Create namespace | `bool` | `true` | no |
 | <a name="input_ha_enabled"></a> [ha\_enabled](#input\_ha\_enabled) | ArgoCD is HA mode | `bool` | `false` | no |
 | <a name="input_namespace_enabled"></a> [namespace\_enabled](#input\_namespace\_enabled) | ArgoCD is namespace-install | `bool` | `false` | no |
+| <a name="input_patches"></a> [patches](#input\_patches) | kustomize patches | <pre>list(object({<br>    patch = optional(string)<br>    path  = optional(string)<br>    target = optional(list(object({<br>      group               = optional(string)<br>      version             = optional(string)<br>      kind                = optional(string)<br>      name                = optional(string)<br>      namespace           = optional(string)<br>      label_selector      = optional(string)<br>      annotation_selector = optional(string)<br>      }))<br>    )<br>    options = optional(list(object({<br>      allow_kind_change = optional(bool)<br>      allow_name_change = optional(bool)<br>      }))<br>    )<br>  }))</pre> | `[]` | no |
 
 ## Outputs
 
