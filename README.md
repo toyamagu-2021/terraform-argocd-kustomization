@@ -3,7 +3,7 @@
 ## Description
 
 - Install ArgoCD to one's cluster by [kbst/terraform-provider-kustomization](https://github.com/kbst/terraform-provider-kustomization)
-- By design of the provider, *THIS MODULE CANNOT DEPENDS ON ANY TERRAFORM RESOURCE*
+- By design of the provider, *THIS MODULE COULD NOT DEPEND ON ANY TERRAFORM RESOURCE*
 
 ## USAGE
 
