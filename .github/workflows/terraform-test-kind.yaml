@@ -25,6 +25,12 @@ jobs:
         uses: helm/kind-action@v1.3.0
         with:
           install_only: true
+
+      - name: ArgoCD version
+        run: |
+          ARGOCD_VERSION=$(curl -s https://api.github.com/repos/argoproj/argo-cd/releases/latest | jq .name)
+          echo "ArgoCD latest version: ${ARGOCD_VERSION}"
+          echo "argocd_version=${ARGOCD_VERSION}" >> $GITHUB_ENV
       
       - name: Terraform init
         id: init
@@ -32,10 +38,10 @@ jobs:
 
       - name: Terraform plan
         id: plan
-        run: terraform plan -no-color -var="argocd_apps_target_revision=${{ github.event.pull_request.head.ref }}"
+        run: terraform plan -no-color -var="argocd_apps_target_revision=${{ github.event.pull_request.head.ref }}" -var="argocd_version=${{ env.argocd_version}}"
       
       - name: Terraform apply
-        run: terraform apply -auto-approve -input=false -var="argocd_apps_target_revision=${{ github.event.pull_request.head.ref }}"
+        run: terraform apply -auto-approve -input=false -var="argocd_apps_target_revision=${{ github.event.pull_request.head.ref }}" -var="argocd_version=${{ env.argocd_version }}"
       
       - name: Setup kubectl
         uses: azure/setup-kubectl@v3
@@ -55,7 +61,7 @@ jobs:
 
       - uses: clowdhaus/argo-cd-action/@main
         with:
-          version: latest
+          version: ${{ env.argocd_version }}
           command: version
           options: --client
       - name: ArgoCD login
