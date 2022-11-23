@@ -20,5 +20,4 @@ variable "argocd_version" {
   description = "ArgoCD version"
   type        = string
   default     = "master"
-
 }
