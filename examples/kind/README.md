@@ -16,6 +16,7 @@
 | Name | Version |
 |------|---------|
 | <a name="provider_kind"></a> [kind](#provider\_kind) | 0.0.15 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.16.0 |
 
 ## Modules
 
@@ -28,11 +29,15 @@
 | Name | Type |
 |------|------|
 | [kind_cluster.this](https://registry.terraform.io/providers/tehcyx/kind/latest/docs/resources/cluster) | resource |
+| [kubernetes_namespace.child-apps](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/namespace) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_argocd_apps_repo"></a> [argocd\_apps\_repo](#input\_argocd\_apps\_repo) | Argocd apps repository. | `string` | `"https://github.com/toyamagu-2021/terraform-argocd-kustomize.git"` | no |
+| <a name="input_argocd_apps_target_revision"></a> [argocd\_apps\_target\_revision](#input\_argocd\_apps\_target\_revision) | Argocd apps target revision. | `string` | `"main"` | no |
+| <a name="input_argocd_version"></a> [argocd\_version](#input\_argocd\_version) | ArgoCD version | `string` | `"master"` | no |
 | <a name="input_kind_cluster_name"></a> [kind\_cluster\_name](#input\_kind\_cluster\_name) | Kind cluster name | `string` | `"kind-cluster"` | no |
 
 ## Outputs
