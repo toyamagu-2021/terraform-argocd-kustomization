@@ -57,6 +57,7 @@ jobs:
           kubectl get applications -n argocd
           kubectl wait application -n argocd apps --for=jsonpath="{.status.sync.status}"=Synced --timeout=180s
           kubectl wait application -n argocd apps --for=jsonpath="{.status.health.status}"=Healthy --timeout=180s
+          kubectl get applications -n argocd
           kubectl wait application -n argocd guestbook --for=jsonpath="{.status.sync.status}"=Synced --timeout=180s
           kubectl wait application -n argocd guestbook --for=jsonpath="{.status.health.status}"=Healthy --timeout=180s
           POD_NUM=`kubectl get po -n child-apps | grep guestbook | wc -l`
