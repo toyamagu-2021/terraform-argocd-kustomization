@@ -43,7 +43,10 @@ jobs:
       
       - name: Port forward to ArgoCD
         run: |
-          kubectl wait deployment -n argocd argocd-server --for condition=Available=True --timeout=180s
+          deploys=$(kubectl get deploy -n argocd -o jsonpath="{.items[*].metadata.name}")
+          for deploy in $deploys; do
+            kubectl wait deployment -n argocd $deploy --for condition=Available=True --timeout=180s
+          done
           kubectl port-forward -n argocd svc/argocd-server 8080:80 &
       
       - name: Curl to ArgoCD
@@ -51,7 +54,7 @@ jobs:
 
       - name: Check number of pods in child-apps namespace
         run: |
-          kubectl wait deployment -n child-apps guestbook-ui --for condition=Available=True --timeout=180s
+          kubectl wait application -n argocd guestbook --for=jsonpath="{.status.health.status}"=Healthy
           POD_NUM=`kubectl get po -n child-apps | grep guestbook | wc -l`
           if [ $POD_NUM -ne 1 ]; then
             echo "Invalid pod number. The test application may not be deployed."
