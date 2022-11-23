@@ -5,7 +5,7 @@ locals {
 
   patches = [
     {
-      patch = templatefile("./patches/argocd-cm.yaml.tftpl", {
+      patch = templatefile("./patches/argocd-cm.tftpl.yaml", {
         url : "https://patched.example.com"
       })
     },
@@ -33,11 +33,11 @@ locals {
     path            = "examples/kind-with-patch/argocd/guestbook"
   }
   argocd_applications = [
-    templatefile("${path.module}/argocd/applications/applications.yaml.tftpl", local.argocd_applications_vars)
+    templatefile("${path.module}/argocd/applications/applications.tftpl.yaml", local.argocd_applications_vars)
   ]
   argocd_projects_vars = {
   }
   argocd_projects = [
-    templatefile("${path.module}/argocd/projects/projects.yaml.tftpl", local.argocd_projects_vars)
+    templatefile("${path.module}/argocd/projects/projects.tftpl.yaml", local.argocd_projects_vars)
   ]
 }

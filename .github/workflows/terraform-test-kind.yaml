@@ -1,0 +1,84 @@
+name: "Test module by kind cluster"
+on: [pull_request]
+jobs:
+  terraform-ci-test:
+    name: terraform-ci-test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        test-path: ["./examples/kind", "./examples/kind-with-patch"]
+    defaults:
+      run:
+        working-directory: ${{ matrix.test-path }}
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Setup terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Setup kind
+        uses: helm/kind-action@v1.3.0
+        with:
+          install_only: true
+
+      - name: ArgoCD version
+        run: |
+          ARGOCD_VERSION=$(curl -s https://api.github.com/repos/argoproj/argo-cd/releases/latest | jq -r .name)
+          echo "ArgoCD latest version: ${ARGOCD_VERSION}"
+          echo "argocd_version=${ARGOCD_VERSION}" >> $GITHUB_ENV
+          echo "argocd_version_numeric=$(echo ${ARGOCD_VERSION} | tr -d v)" >> $GITHUB_ENV
+      
+      - name: Terraform init
+        id: init
+        run: terraform init
+
+      - name: Terraform plan
+        id: plan
+        run: terraform plan -no-color -var="argocd_apps_target_revision=${{ github.event.pull_request.head.ref }}" -var="argocd_version=${{ env.argocd_version}}"
+      
+      - name: Terraform apply
+        run: terraform apply -auto-approve -input=false -var="argocd_apps_target_revision=${{ github.event.pull_request.head.ref }}" -var="argocd_version=${{ env.argocd_version }}"
+      
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        id: install
+      - run: kubectl version
+      
+      - name: Port forward to ArgoCD
+        run: |
+          deploys=$(kubectl get deploy -n argocd -o jsonpath="{.items[*].metadata.name}")
+          for deploy in $deploys; do
+            kubectl wait deployment -n argocd $deploy --for condition=Available=True --timeout=180s
+          done
+          kubectl port-forward -n argocd svc/argocd-server 8080:80 &
+      
+      - name: Curl to ArgoCD
+        run: curl localhost:8080
+
+      - uses: clowdhaus/argo-cd-action/@main
+        with:
+          version: ${{ env.argocd_version_numeric }}
+          command: version
+          options: --client
+      - name: ArgoCD login
+        run: |
+          ARGOCD_PASSWORD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+          argocd login localhost:8080 --username admin --password ${ARGOCD_PASSWORD} --insecure
+
+      - name: Check number of pods in child-apps namespace
+        run: |
+          argocd app wait apps
+          argocd app wait guestbook
+          POD_NUM=`kubectl get po -n child-apps | grep guestbook | wc -l`
+          if [ $POD_NUM -ne 1 ]; then
+            echo "Invalid pod number. The test application may not be deployed."
+            exit 1
+          fi
+
+      - name: Terraform destroy
+        run: terraform destroy -auto-approve
