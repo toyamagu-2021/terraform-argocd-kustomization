@@ -40,6 +40,7 @@ jobs:
       - name: Setup kubectl
         uses: azure/setup-kubectl@v3
         id: install
+      - run: kubectl version
       
       - name: Port forward to ArgoCD
         run: |
@@ -52,14 +53,20 @@ jobs:
       - name: Curl to ArgoCD
         run: curl localhost:8080
 
+      - uses: clowdhaus/argo-cd-action/@main
+        with:
+          version: latest
+          command: version
+          options: --client
+      - name: ArgoCD login
+        run: |
+          ARGOCD_PASSWORD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+          argocd login localhost:8080 --username admin --password ${ARGOCD_PASSWORD} --insecure
+
       - name: Check number of pods in child-apps namespace
         run: |
-          kubectl get applications -n argocd
-          kubectl wait application -n argocd apps --for=jsonpath="{.status.sync.status}"=Synced --timeout=180s
-          kubectl wait application -n argocd apps --for=jsonpath="{.status.health.status}"=Healthy --timeout=180s
-          kubectl get applications -n argocd
-          kubectl wait application -n argocd guestbook --for=jsonpath="{.status.sync.status}"=Synced --timeout=180s
-          kubectl wait application -n argocd guestbook --for=jsonpath="{.status.health.status}"=Healthy --timeout=180s
+          argocd app wait apps
+          argocd app wait guestbook
           POD_NUM=`kubectl get po -n child-apps | grep guestbook | wc -l`
           if [ $POD_NUM -ne 1 ]; then
             echo "Invalid pod number. The test application may not be deployed."
