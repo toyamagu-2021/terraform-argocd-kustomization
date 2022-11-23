@@ -15,7 +15,7 @@
 
 | Name | Version |
 |------|---------|
-| <a name="provider_kind"></a> [kind](#provider\_kind) | ~>0 |
+| <a name="provider_kind"></a> [kind](#provider\_kind) | 0.0.15 |
 
 ## Modules
 
