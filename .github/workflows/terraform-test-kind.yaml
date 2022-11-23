@@ -28,9 +28,10 @@ jobs:
 
       - name: ArgoCD version
         run: |
-          ARGOCD_VERSION=$(curl -s https://api.github.com/repos/argoproj/argo-cd/releases/latest | jq .name)
+          ARGOCD_VERSION=$(curl -s https://api.github.com/repos/argoproj/argo-cd/releases/latest | jq -r .name)
           echo "ArgoCD latest version: ${ARGOCD_VERSION}"
           echo "argocd_version=${ARGOCD_VERSION}" >> $GITHUB_ENV
+          echo "argocd_version_numeric=$(echo ${ARGOCD_VERSION} | tr -d v)" >> $GITHUB_ENV
       
       - name: Terraform init
         id: init
@@ -61,7 +62,7 @@ jobs:
 
       - uses: clowdhaus/argo-cd-action/@main
         with:
-          version: ${{ env.argocd_version }}
+          version: ${{ env.argocd_version_numeric }}
           command: version
           options: --client
       - name: ArgoCD login
