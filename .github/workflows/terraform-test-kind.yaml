@@ -54,6 +54,7 @@ jobs:
 
       - name: Check number of pods in child-apps namespace
         run: |
+          kubectl get applications -n argocd
           kubectl wait application -n argocd apps --for=jsonpath="{.status.health.status}"=Healthy
           kubectl wait application -n argocd apps --for=jsonpath="{.status.sync.status}"=Synced
           kubectl wait application -n argocd guestbook --for=jsonpath="{.status.health.status}"=Healthy
