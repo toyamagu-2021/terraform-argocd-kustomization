@@ -51,6 +51,7 @@ jobs:
 
       - name: Check number of pods in child-apps namespace
         run: |
+          kubectl wait deployment -n child-apps guestbook-ui --for condition=Available=True --timeout=180s
           POD_NUM=`kubectl get po -n child-apps | grep guestbook | wc -l`
           if [ $POD_NUM -ne 1 ]; then
             echo "Invalid pod number. The test application may not be deployed."
