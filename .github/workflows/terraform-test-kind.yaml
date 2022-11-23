@@ -42,7 +42,9 @@ jobs:
         id: install
       
       - name: Port forward to ArgoCD
-        run: kubectl port-forward -n argocd svc/argocd-server 8080:80 &
+        run: |
+          kubectl wait deployment -n argocd argocd-server --for condition=Available=True --timeout=180s
+          kubectl port-forward -n argocd svc/argocd-server 8080:80 &
       
       - name: Curl to ArgoCD
         run: curl localhost:8080
